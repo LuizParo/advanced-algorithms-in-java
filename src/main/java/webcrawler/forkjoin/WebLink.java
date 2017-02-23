@@ -5,6 +5,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.ForkJoinPool;
 
+/**
+ * Class that represents a web link that will eventually be visited by a {@link LinkVisitor}. It uses the Fork/Join Framework
+ * to divide the work of visiting the links between a pool of threads, eventually merging all the results into a single one if we
+ * wanted to.
+ * 
+ * PS: Since we are crawling the entire web, the program will virtually never stop running =)
+ */
+
 public final class WebLink {
     private static final Collection<WebLink> VISITED_LINKS = Collections.synchronizedSet(new HashSet<>());
     private final String url;
@@ -16,6 +24,7 @@ public final class WebLink {
     }
     
     public void startCrawling() {
+    	// Here it's where all start, the LinkVisitor is a task that can be invoked by the ForkJoinPool.
         this.forkJoinPool.invoke(new LinkVisitor(this));
     }
     
